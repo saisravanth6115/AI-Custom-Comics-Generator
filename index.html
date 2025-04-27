@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI COMIC SCRIPT  GENERATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6e8efb, #a777e3);
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --header-height: 64px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header-container {
+            background: var(--primary-gradient);
+            height: var(--header-height);
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .app-title {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: none;
+            padding: 0;
+        }
+
+        .app-logo {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .theme-toggle, .settings-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover, .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle svg, .settings-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+            }
+
+            .header-container {
+                padding: 0 16px;
+                height: 56px;
+                border-radius: 0;
+            }
+
+            .app-title {
+                font-size: 20px;
+            }
+
+            .app-logo {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        :root {
+            --primary-color: #6e8efb;
+            --secondary-color: #a777e3;
+            --bg-dark: #1a1a1a;
+            --bg-darker: #121212;
+            --text-secondary: #b3b3b3;
+            --border-color: #333333;
+            --message-bg-user: #2c3e50;
+            --message-bg-bot: #34495e;
+            --hover-color: #4a6bff;
+        }
+
+        [data-theme="light"] {
+            --primary-color: #6e8efb;
+            --secondary-color: #a777e3;
+            --bg-dark: #f0f2f5;
+            --bg-darker: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --message-bg-user: #e7f3ff;
+            --message-bg-bot: #f1f1f1;
+            --hover-color: #4a6bff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .chat-container {
+            background-color: var(--bg-darker);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-primary);
+            padding: 20px;
+            margin: 0;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--bg-darker);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+            animation: messageAppear 0.3s ease-out;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            background-color: var(--message-bg-user);
+            color: var(--text-primary);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            background-color: var(--message-bg-bot);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .image-comparison-message {
+            background-color: transparent;
+            padding: 10px 0;
+            width: 100%;
+            max-width: none;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .image-wrapper {
+            background-color: var(--bg-dark);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+            max-width: 45%;
+            transition: transform 0.3s ease;
+        }
+
+        .image-wrapper:hover {
+            transform: translateY(-5px);
+        }
+
+        .chat-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px;
+            display: block;
+            margin: 0 auto 8px auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .chat-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background-color: var(--bg-darker);
+            color: var(--text-primary);
+            font-size: 1em;
+            outline: none;
+        }
+
+        #user-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(110, 142, 251, 0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-primary);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--hover-color), var(--secondary-color));
+        }
+
+        .loading {
+            text-align: center;
+            padding: 15px;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.9em;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 95vh;
+                max-height: none;
+                border-radius: 0;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .image-comparison-message {
+                gap: 15px;
+            }
+
+            .image-wrapper {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="header-container">
+            <h1 class="app-title">
+                <span class="app-logo">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill="#333333"/>
+                        <path d="M21 15l-5-5L4 21" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                AI COMIC SCRIPT  GENERATOR
+            </h1>
+            <div class="header-controls">
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+                    </svg>
+                </button>
+                <button class="settings-btn" title="Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="chat-box" class="chat-box">
+            <!-- Initial bot message can be added here or via JS -->
+        </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type Your idea to generate a comic story...">
+            <button id="send-button">Send</button>
+            <input type="file" id="image-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+            <btton id="upload-button">
+                 <sg xmlns="" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                   <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+                   <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
+                 </svg>
+                 
+              </button>
+        </div>
+         <div id="loading-indicator" class="loading" style="display: none;">Processing...</div>
+        <!-- <div class="api-key-section">
+            <input type="text" id="apiKey" placeholder="Enter your Gemini API key" class="api-key-input">
+            <button onclick="saveApiKey()" class="api-key-button">Save API Key</button>
+        </div> -->
+    </div>
+
+    <!-- Link JS from static folder -->
+    <script>const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const uploadButton = document.getElementById('upload-button');
+        const imageUpload = document.getElementById('image-upload');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        
+        // --- Configuration ---
+        // Assuming your Flask app serves the frontend and backend from the same origin
+        const UPLOAD_API_URL = '/upload'; // Endpoint defined in your Python app
+        // Gemini API config (keep if you still want text chat functionality)
+        const USE_GEMINI = true; // Set to false if you only want image enhancement
+        const GEMINI_API_KEY = "AIzaSyDjWCg92bv-kn6U2ArSxBSGw1wpi3SdstA"; // <-- REPLACE IF USING GEMINI
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+        
+        // --- Event Listeners ---
+        
+        sendButton.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+        
+        uploadButton.addEventListener('click', () => {
+            imageUpload.click();
+        });
+        
+        imageUpload.addEventListener('change', handleImageUpload); // Use the updated function below
+        
+        // --- Functions ---
+        
+        function displayMessage(sender, text) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+            // Basic sanitization to prevent direct HTML injection from text
+            messageElement.textContent = text;
+            chatBox.appendChild(messageElement);
+            scrollToBottom();
+            return messageElement;
+        }
+        
+        // Updated function to work with image URLs from your backend
+        function displayImageComparisonMessage(originalImageUrl, enhancedImageUrl) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message', 'bot-message', 'image-comparison-message');
+        
+            // Original image using URL from backend
+            const originalWrapper = document.createElement('div');
+            originalWrapper.classList.add('image-wrapper');
+            const originalImg = document.createElement('img');
+            originalImg.src = originalImageUrl; // Use URL directly
+            originalImg.alt = 'Original Image';
+            originalImg.classList.add('chat-image');
+            originalImg.onerror = () => { // Add basic error handling for image loading
+                originalImg.alt = 'Original image failed to load';
+                originalLabel.textContent = 'Original (Error)';
+             };
+            const originalLabel = document.createElement('div');
+            originalLabel.classList.add('image-label');
+            originalLabel.textContent = 'Original';
+            originalWrapper.appendChild(originalImg);
+            originalWrapper.appendChild(originalLabel);
+        
+            // Enhanced image using URL from backend
+            const enhancedWrapper = document.createElement('div');
+            enhancedWrapper.classList.add('image-wrapper');
+            const enhancedImg = document.createElement('img');
+            enhancedImg.src = enhancedImageUrl; // Use URL directly
+            enhancedImg.alt = 'Enhanced Image';
+            enhancedImg.classList.add('chat-image');
+             enhancedImg.onerror = () => {
+                enhancedImg.alt = 'Enhanced image failed to load';
+                enhancedLabel.textContent = 'Enhanced (Error)';
+             };
+            const enhancedLabel = document.createElement('div');
+            enhancedLabel.classList.add('image-label');
+            enhancedLabel.textContent = 'Enhanced';
+            enhancedWrapper.appendChild(enhancedImg);
+            enhancedWrapper.appendChild(enhancedLabel);
+        
+            messageContainer.appendChild(originalWrapper);
+            messageContainer.appendChild(enhancedWrapper);
+        
+            chatBox.appendChild(messageContainer);
+            scrollToBottom();
+        }
+        
+        
+        function showLoading(isLoading) {
+            loadingIndicator.style.display = isLoading ? 'block' : 'none';
+            userInput.disabled = isLoading;
+            sendButton.disabled = isLoading;
+            uploadButton.disabled = isLoading;
+        }
+        
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+        
+            displayMessage('user', text);
+            userInput.value = '';
+        
+            // --- Optional: Call Gemini if enabled ---
+            if (USE_GEMINI) {
+                if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
+                     displayMessage('bot', "Gemini API key not configured in script.js");
+                     return;
+                }
+                showLoading(true);
+                try {
+                    const response = await fetch(GEMINI_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] }),
+                    });
+        
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`API Error: ${response.status} ${errorData.error?.message || response.statusText}`);
+                    }
+        
+                    const data = await response.json();
+                    let botResponse = "Sorry, I couldn't process that.";
+                    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        botResponse = data.candidates[0].content.parts[0].text;
+                    } else if (data.promptFeedback?.blockReason) {
+                         botResponse = `Blocked: ${data.promptFeedback.blockReason}`;
+                    }
+                    displayMessage('bot', botResponse);
+                } catch (error) {
+                    console.error('Error fetching from Gemini API:', error);
+                    displayMessage('bot', `Gemini Error: ${error.message}.`);
+                } finally {
+                    showLoading(false);
+                }
+            } else {
+                // Simple response if Gemini is disabled
+                setTimeout(() => {
+                     displayMessage('bot', "I'm ready to enhance photos! Please use the upload button.");
+                }, 500);
+            }
+        }
+        
+        // *** UPDATED TO WORK WITH YOUR PYTHON BACKEND ***
+        async function handleImageUpload(event) {
+            const file = event.target.files[0];
+            // Use the validation function from your backend logic (client-side check)
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+            if (!file || !allowedTypes.includes(file.type)) {
+                 if(file) displayMessage('bot', 'Please upload a valid image (PNG, JPG, WebP).');
+                 imageUpload.value = null;
+                 return;
+             }
+             // Use the size limit from your backend config (client-side check)
+             const maxSizeMB = 5;
+             if (file.size > maxSizeMB * 1024 * 1024) {
+                 displayMessage('bot', `Image too large (Max ${maxSizeMB}MB).`);
+                 imageUpload.value = null;
+                 return;
+             }
+        
+            displayMessage('user', `Uploading: ${file.name}`);
+            const processingMsg = displayMessage('bot', 'Enhancing your photo, please wait...');
+            showLoading(true);
+        
+            // --- Send image to Backend ---
+            const formData = new FormData();
+            // Your Python backend expects the file under the key 'file'
+            formData.append('file', file);
+        
+            try {
+                // Use the endpoint defined in your Python app
+                const response = await fetch(UPLOAD_API_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                processingMsg.remove(); // Remove processing message
+        
+                if (!response.ok) {
+                    let errorMsg = `Server error: ${response.status}`;
+                    try {
+                        // Try to parse backend error message if available
+                        const errorData = await response.json();
+                        errorMsg = `Error: ${errorData.message || response.statusText}`;
+                    } catch (jsonError) { /* Ignore if response isn't JSON */ }
+                    throw new Error(errorMsg);
+                }
+        
+                const result = await response.json();
+        
+                // Check the status and required URLs from your backend response
+                if (result.status === 'success' && result.original && result.enhanced) {
+                    // --- Display Results using URLs from backend ---
+                    displayImageComparisonMessage(result.original, result.enhanced);
+                    displayMessage('bot', "Enhancement complete! What do you think?");
+                } else {
+                     throw new Error(result.message || 'Backend processing failed or returned invalid data.');
+                }
+        
+            } catch (error) {
+                console.error("Error during image upload/enhancement:", error);
+                if(processingMsg) processingMsg.remove(); // Ensure removal on error
+                displayMessage('bot', `Sorry, couldn't enhance the photo: ${error.message}`);
+            } finally {
+                showLoading(false);
+                imageUpload.value = null; // Clear the file input
+            }
+        } // End of handleImageUpload
+        
+        
+        function scrollToBottom() {
+            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 50);
+        }
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update theme toggle icon
+            const themeToggle = document.querySelector('.theme-toggle svg');
+            if (newTheme === 'light') {
+                themeToggle.innerHTML = `
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                `;
+            } else {
+                themeToggle.innerHTML = `
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                `;
+            }
+        }
+
+        // Check for saved theme preference
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+        });</script>
+</body>
+</html>
