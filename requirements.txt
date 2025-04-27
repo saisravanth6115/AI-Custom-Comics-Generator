@@ -1,0 +1,7 @@
+# requirements.txt
+Flask
+opencv-python
+Pillow
+numpy
+Werkzeug
+# python-dotenv is NOT needed for this version as key is hardcoded in JS
